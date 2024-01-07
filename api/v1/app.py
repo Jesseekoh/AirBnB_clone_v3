@@ -5,6 +5,7 @@ from api.v1.views import app_views
 from flask import Flask
 from models import storage
 from os import getenv
+from flask import jsonify
 
 app = Flask(__name__)
 
@@ -14,6 +15,12 @@ app.register_blueprint(app_views)
 @app.teardown_appcontext
 def cleanUp(exception):
     storage.close()
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    error_dic = {"error": "not found"}
+    return jsonify(error_dic)
 
 
 if __name__ == '__main__':
