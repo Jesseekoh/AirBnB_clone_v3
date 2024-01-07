@@ -3,9 +3,9 @@
 
 from api.v1.views import app_views
 from flask import Flask
-from models import storage
-from os import getenv
 from flask import jsonify
+from os import getenv
+from models import storage
 
 app = Flask(__name__)
 
@@ -19,7 +19,7 @@ def cleanUp(exception):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    error_dic = {"error": "not found"}
+    error_dic = {"error": "Not found"}
     return jsonify(error_dic)
 
 
