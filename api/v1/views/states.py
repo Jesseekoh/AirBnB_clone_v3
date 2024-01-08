@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+"""View for State objects that handles default API actions"""
 from api.v1.views import app_views
 from flask import jsonify, request, abort
 from models import storage
