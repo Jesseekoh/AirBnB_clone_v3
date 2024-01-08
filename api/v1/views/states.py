@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 """View for State objects that handles default API actions"""
+from flask import abort
 from api.v1.views import app_views
-from flask import jsonify, request, abort
+from flask import jsonify
+from flask import request
 from models import storage
 from models.state import State
 
@@ -77,7 +79,7 @@ def update_state(state_id):
     if not state:
         abort(404)
 
-    or key, value in json_data.items():
+    for key, value in json_data.items():
         if not (key in invalid_keys):
             setattr(state, key, value)
 
