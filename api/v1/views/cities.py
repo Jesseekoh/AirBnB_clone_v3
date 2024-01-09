@@ -84,7 +84,7 @@ def create_city(state_id):
 @app_views.route('/cities/<city_id>', methods=['PUT'], strict_slashes=False)
 def update_city(city_id):
     """update city with matching city_id"""
-    invalid_key = ['id', 'state_id', 'created_at' 'updated_at']
+    invalid_key = ['id', 'state_id', 'created_at', 'updated_at']
     city = storage.get(City, city_id)
 
     if not city:
