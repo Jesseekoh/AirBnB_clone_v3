@@ -5,11 +5,10 @@ from flask import jsonify
 from flask import abort
 from flask import request
 from models import storage
-from models.state import State
-from models.city import City
+from models.place import Place
 
 
-@app_views.route('/states/<state_id>/cities', methods=['GET'],
+@app_views.route('/cities/<city_id>/places', methods=['GET'],
                  strict_slashes=False)
 def city_of_state(state_id):
     """retrive all city with matching state_id"""
