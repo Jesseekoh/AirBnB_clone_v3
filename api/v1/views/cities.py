@@ -9,7 +9,7 @@ from models.state import State
 from models.city import City
 
 
-@app_views.route('states/<state_id>/cities', methods=['GET'],
+@app_views.route('/states/<state_id>/cities', methods=['GET'],
                  strict_slashes=False)
 def city_of_state(state_id):
     """retrive all city with matching state_id"""
@@ -53,7 +53,7 @@ def delete_city(city_id):
     return {}
 
 
-@app_views.route('states/<state_id>/cities', methods=['POST'],
+@app_views.route('/states/<state_id>/cities', methods=['POST'],
                  strict_slashes=False)
 def create_city(state_id):
     """create a city with association to the
