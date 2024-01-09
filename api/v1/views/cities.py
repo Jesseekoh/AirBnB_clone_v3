@@ -9,7 +9,7 @@ from models.state import State
 from models.city import City
 
 
-@app_views.route('/states/<state_id>/cities', methods=['GET'],
+@app_views.route('states/<state_id>/cities', methods=['GET'],
                  strict_slashes=False)
 def city_of_state(state_id):
     """retrive all city with matching state_id"""
