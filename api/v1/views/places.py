@@ -1,65 +1,68 @@
 #!/usr/bin/python3
-"""a view for City objects that handles all default RESTFul API actions"""
+"""a view for Place objects that handles all default RESTFul API actions"""
 from api.v1.views import app_views
 from flask import jsonify
 from flask import abort
 from flask import request
 from models import storage
 from models.place import Place
+from models.city import City
+from models.user import User
 
 
 @app_views.route('/cities/<city_id>/places', methods=['GET'],
                  strict_slashes=False)
-def city_of_state(state_id):
-    """retrive all city with matching state_id"""
-    cityArray = []
-    state = storage.get(State, state_id)
-
-    if not state:
-        abort(404)
-
-    for city in state.cities:
-        cityArray.append(city.to_dict())
-
-    if not cityArray:
-        abort(404)
-
-    return jsonify(cityArray)
-
-
-@app_views.route('/cities/<city_id>', methods=['GET'], strict_slashes=False)
-def get_city(city_id):
-    """retrive a city with matching city_id"""
+def place_of_city(city_id):
+    """retrive all place with matching city_id"""
+    placeArray = []
     city = storage.get(City, city_id)
 
     if not city:
         abort(404)
 
-    return jsonify(city.to_dict())
+    for place in city.places:
+        placeArray.append(place.to_dict())
 
-
-@app_views.route('/cities/<city_id>', methods=['DELETE'], strict_slashes=False)
-def delete_city(city_id):
-    """delete a city with matching city_id"""
-    city = storage.get(City, city_id)
-
-    if not city:
+    if not placeArray:
         abort(404)
 
-    storage.delete(city)
+    return jsonify(placeArray)
+
+
+@app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
+def get_place(place_id):
+    """retrive a place with matching place_id"""
+    place = storage.get(Place, place_id)
+
+    if not place:
+        abort(404)
+
+    return jsonify(place.to_dict())
+
+
+@app_views.route('/places/<place_id>', methods=['DELETE'],
+                 strict_slashes=False)
+def delete_place(place_id):
+    """delete a place with matching place_id"""
+    place = storage.get(Place, place_id)
+
+    if not place:
+        abort(404)
+
+    storage.delete(place)
     storage.save()
 
     return {}
 
 
-@app_views.route('/states/<state_id>/cities', methods=['POST'],
+@app_views.route('/cities/<city_id>/places', methods=['POST'],
                  strict_slashes=False)
-def create_city(state_id):
-    """create a city with association to the
-    state_id passed"""
-    state = storage.get(State, state_id)
+def create_place(city_id):
+    """create a place with association to the
+    city_id passed"""
+    city = storage.get(City, city_id)
 
-    if not state:
+    if not city:
         abort(404)
 
     if not request.get_json():
@@ -68,25 +71,32 @@ def create_city(state_id):
     if not ('name' in request.get_json()):
         abort(400, 'Missing name')
 
+    if not ('user_id' in request.get_json()):
+        abort(400, 'Missing user_id')
+
     data = request.get_json()
 
-    data['state_id'] = state_id
+    user = storage.get(User, data['user_id'])
+    if not user:
+        abort(404)
 
-    city = City(**data)
+    data['city_id'] = city_id
 
-    storage.new(city)
+    place = Place(**data)
+
+    storage.new(place)
     storage.save()
 
-    return jsonify(city.to_dict()), 201
+    return jsonify(place.to_dict()), 201
 
 
-@app_views.route('/cities/<city_id>', methods=['PUT'], strict_slashes=False)
-def update_city(city_id):
-    """update city with matching city_id"""
-    invalid_key = ['id', 'state_id', 'created_at', 'updated_at']
-    city = storage.get(City, city_id)
+@app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
+def update_place(place_id):
+    """update place with matching place_id"""
+    invalid_key = ['id', 'user_id', 'city_id', 'created_at', 'updated_at']
+    place = storage.get(Place, place_id)
 
-    if not city:
+    if not place:
         abort(404)
 
     if not request.get_json():
@@ -96,7 +106,7 @@ def update_city(city_id):
 
     for key, value in data.items():
         if not (key in invalid_key):
-            setattr(city, key, value)
+            setattr(place, key, value)
 
     storage.save()
-    return jsonify(city.to_dict())
+    return jsonify(place.to_dict())
