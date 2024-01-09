@@ -64,7 +64,7 @@ def create_city(state_id):
         abort(404)
 
     if not request.get_json():
-        return jsonify('Not a JSON'), 400
+        return jsonify("Not a JSON"), 400
 
     if not ('name' in request.get_json()):
         abort(400, 'Missing name')
